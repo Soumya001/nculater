@@ -29,7 +29,7 @@
       [
         "expo-build-properties",
         {
-          "android": { "compileSdkVersion": 34, "targetSdkVersion": 34 }
+          "android": { "compileSdkVersion": 35, "targetSdkVersion": 35 }
         }
       ]
     ],
