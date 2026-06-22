@@ -1,10 +1,6 @@
 name: EAS Build — Android APK + iOS
 
 on:
-  push:
-    branches: [main]
-    paths:
-      - 'bedside-native/**'
   workflow_dispatch:
     inputs:
       platform:
@@ -22,12 +18,10 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Setup Node
+      - name: Setup Node 18
         uses: actions/setup-node@v4
         with:
           node-version: 18
-          cache: npm
-          cache-dependency-path: bedside-native/package-lock.json
 
       - name: Setup EAS
         uses: expo/expo-github-action@v8
@@ -37,34 +31,23 @@ jobs:
 
       - name: Install dependencies
         working-directory: bedside-native
-        run: npm install
+        run: npm install --legacy-peer-deps
 
-      - name: Init EAS project (first run only)
-        working-directory: bedside-native
-        run: eas init --id $(eas project:info --json 2>/dev/null | jq -r '.id' || echo "") --non-interactive || eas init --non-interactive
-        env:
-          EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
-        continue-on-error: true
-
-      - name: Build Android APK
+      - name: Build Android APK on EAS
         working-directory: bedside-native
         run: eas build --platform android --profile preview --non-interactive --wait
         env:
           EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
 
-      - name: Get APK download URL
+      - name: Download APK from EAS
         working-directory: bedside-native
         run: |
-          URL=$(eas build:list --platform android --status finished --limit 1 --json --non-interactive | jq -r '.[0].artifacts.buildUrl')
-          echo "APK URL: $URL"
-          echo "APK_URL=$URL" >> $GITHUB_ENV
+          URL=$(eas build:list --platform android --status finished --limit 1 --json --non-interactive 2>/dev/null | python3 -c "import sys,json; data=json.load(sys.stdin); print(data[0]['artifacts']['buildUrl'])" 2>/dev/null || echo "")
+          if [ -n "$URL" ]; then
+            curl -L "$URL" -o ../nculater-android.apk && echo "Downloaded APK"
+          fi
         env:
           EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
-
-      - name: Download and upload APK artifact
-        run: |
-          curl -L "$APK_URL" -o nculater-android.apk
-          echo "Downloaded APK"
         continue-on-error: true
 
       - name: Upload APK artifact
@@ -76,19 +59,17 @@ jobs:
           if-no-files-found: warn
 
   build-ios:
-    name: Build iOS
-    runs-on: macos-latest
-    if: ${{ github.event_name == 'workflow_dispatch' && (inputs.platform == 'ios' || inputs.platform == 'all') }}
+    name: Build iOS IPA
+    runs-on: ubuntu-latest
+    if: ${{ inputs.platform == 'ios' || inputs.platform == 'all' }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Setup Node
+      - name: Setup Node 18
         uses: actions/setup-node@v4
         with:
           node-version: 18
-          cache: npm
-          cache-dependency-path: bedside-native/package-lock.json
 
       - name: Setup EAS
         uses: expo/expo-github-action@v8
@@ -98,29 +79,20 @@ jobs:
 
       - name: Install dependencies
         working-directory: bedside-native
-        run: npm install
+        run: npm install --legacy-peer-deps
 
-      - name: Init EAS project
-        working-directory: bedside-native
-        run: eas init --non-interactive
-        env:
-          EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
-        continue-on-error: true
-
-      - name: Build iOS
+      - name: Build iOS on EAS
         working-directory: bedside-native
         run: eas build --platform ios --profile preview --non-interactive --wait
         env:
           EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
           APPLE_ID: ${{ secrets.APPLE_ID }}
           APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
-          ASC_APP_ID: ${{ secrets.ASC_APP_ID }}
 
       - name: Upload IPA artifact
         uses: actions/upload-artifact@v4
         with:
-          name: nculater-ios
+          name: nculater-ios-ipa
           path: '*.ipa'
           retention-days: 90
           if-no-files-found: warn
-
