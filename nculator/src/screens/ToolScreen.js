@@ -1,5 +1,6 @@
 import React, { useContext, useState, useCallback } from 'react';
 import { View, Text, ScrollView, TouchableOpacity, TextInput, StyleSheet, SafeAreaView, KeyboardAvoidingView, Platform } from 'react-native';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { AppContext } from '../../App';
 
 export default function ToolScreen({ route, navigation }) {
@@ -43,10 +44,10 @@ export default function ToolScreen({ route, navigation }) {
         {/* HEADER */}
         <View style={[s.header, { borderBottomColor: theme.border }]}>
           <TouchableOpacity style={[s.backBtn, { backgroundColor: theme.s2 }]} onPress={() => navigation.goBack()}>
-            <Text style={[s.backIcon, { color: theme.text }]}>‹</Text>
+            <MaterialCommunityIcons name="chevron-left" size={26} color={theme.text} />
           </TouchableOpacity>
           <View style={[s.iconBadge, { backgroundColor: `rgba(${accentRgb},0.2)`, borderColor: `rgba(${accentRgb},0.4)` }]}>
-            <Text style={s.iconText}>{tool.icon}</Text>
+            <MaterialCommunityIcons name={tool.icon} size={22} color={accentColor} />
           </View>
           <View style={{ flex: 1 }}>
             <Text style={[s.toolName, { color: theme.text }]}>{tool.name}</Text>
@@ -297,7 +298,6 @@ const styles = (theme) => StyleSheet.create({
   safe: { flex: 1 },
   header: { flexDirection: 'row', alignItems: 'center', gap: 12, padding: 16, paddingBottom: 14, borderBottomWidth: 1 },
   backBtn: { width: 40, height: 40, borderRadius: 20, alignItems: 'center', justifyContent: 'center' },
-  backIcon: { fontSize: 28, lineHeight: 32 },
   iconBadge: { width: 44, height: 44, borderRadius: 14, alignItems: 'center', justifyContent: 'center', borderWidth: 1 },
   iconText: { fontSize: 22 },
   toolName: { fontSize: 17, fontWeight: '700', letterSpacing: -0.2 },

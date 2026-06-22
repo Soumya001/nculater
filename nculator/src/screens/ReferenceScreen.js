@@ -1,6 +1,8 @@
-import React, { useContext } from 'react';
-import { View, Text, ScrollView, StyleSheet, SafeAreaView } from 'react-native';
+import React, { useContext, useRef, useCallback } from 'react';
+import { View, Text, Animated, Easing, ScrollView, StyleSheet, SafeAreaView } from 'react-native';
+import { useFocusEffect } from '@react-navigation/native';
 import { AppContext } from '../../App';
+import TopBar from '../components/TopBar';
 
 const SECTION = ({ label, danger, children, theme }) => (
   <View style={{ marginBottom: 20 }}>
@@ -34,72 +36,87 @@ export default function ReferenceScreen() {
   const { theme } = useContext(AppContext);
   const s = styles;
 
+  const opacity = useRef(new Animated.Value(0)).current;
+  const translateY = useRef(new Animated.Value(10)).current;
+
+  useFocusEffect(useCallback(() => {
+    opacity.setValue(0);
+    translateY.setValue(10);
+    Animated.parallel([
+      Animated.timing(opacity,    { toValue: 1, duration: 220, easing: Easing.out(Easing.cubic), useNativeDriver: true }),
+      Animated.timing(translateY, { toValue: 0, duration: 220, easing: Easing.out(Easing.cubic), useNativeDriver: true }),
+    ]).start();
+  }, []));
+
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: theme.bg }}>
-      <ScrollView contentContainerStyle={{ padding: 16, paddingBottom: 40 }} showsVerticalScrollIndicator={false}>
+      <TopBar />
+      <Animated.View style={{ flex: 1, opacity, transform: [{ translateY }] }}>
+        <ScrollView contentContainerStyle={{ padding: 16, paddingBottom: 40 }} showsVerticalScrollIndicator={false}>
 
-        <Text style={[s.title, { color: theme.text }]}>Reference</Text>
+          <Text style={[s.title, { color: theme.text }]}>Reference</Text>
 
-        <SECTION label="HOW TO USE" theme={theme}>
-          <Step n="1" text="Enter values exactly as written on the order — unit for unit. Do not convert in your head before entering." theme={theme} />
-          <Divider theme={theme} />
-          <Step n="2" text="Read the result and the working line below it. If the working doesn't match how you'd do it by hand, stop and recheck." theme={theme} />
-          <Divider theme={theme} />
-          <Step n="3" text="Cross-check the result against the prescriber's order. If they differ, the order is the authority — query the order, don't adjust the dose." theme={theme} />
-          <Divider theme={theme} />
-          <Step n="4" text="For high-risk calculations (titration, chemotherapy, paediatric), have a second qualified clinician independently verify before giving." theme={theme} />
-          <Divider theme={theme} />
-          <Step n="5" text="If the result or any warning feels wrong — trust that instinct. Call pharmacy or the prescriber before proceeding." theme={theme} />
-        </SECTION>
+          <SECTION label="HOW TO USE" theme={theme}>
+            <Step n="1" text="Enter values exactly as written on the order — unit for unit. Do not convert in your head before entering." theme={theme} />
+            <Divider theme={theme} />
+            <Step n="2" text="Read the result and the working line below it. If the working doesn't match how you'd do it by hand, stop and recheck." theme={theme} />
+            <Divider theme={theme} />
+            <Step n="3" text="Cross-check the result against the prescriber's order. If they differ, the order is the authority — query the order, don't adjust the dose." theme={theme} />
+            <Divider theme={theme} />
+            <Step n="4" text="For high-risk calculations (titration, chemotherapy, paediatric), have a second qualified clinician independently verify before giving." theme={theme} />
+            <Divider theme={theme} />
+            <Step n="5" text="If the result or any warning feels wrong — trust that instinct. Call pharmacy or the prescriber before proceeding." theme={theme} />
+          </SECTION>
 
-        <SECTION label="WHEN NOT TO USE" danger theme={theme}>
-          {['You are unfamiliar with the drug, route, or indication — look it up first.',
-            'The patient is deteriorating — escalate immediately rather than calculating.',
-            'Your policy mandates a pharmacist check — this app does not replace that requirement.',
-            'Complex titration with multi-step adjustments — use the pump\'s validated drug library.',
-            'The order is unclear or ambiguous — clarify with the prescriber before calculating.'
-          ].map((t, i) => (
-            <View key={i}>
-              {i > 0 && <Divider theme={theme} />}
-              <Row icon="🚫" body={t} theme={theme} />
-            </View>
-          ))}
-        </SECTION>
-
-        <SECTION label="LEGAL & ETHICAL" theme={theme}>
-          <Row icon="⚖️" title="Not a certified medical device." body="This app is a mathematical aid. It has not been validated or approved under CE, FDA, TGA, or any other regulatory framework." theme={theme} />
-          <Divider theme={theme} />
-          <Row icon="📋" title="The prescriber's order is the authority." body="A result that differs from the order means query the order — not that the order is wrong." theme={theme} />
-          <Divider theme={theme} />
-          <Row icon="🏛" title="Professional accountability stays with the clinician." body="Using this app does not transfer or reduce your professional, legal, or ethical responsibility." theme={theme} />
-          <Divider theme={theme} />
-          <Row icon="🏥" title="Local protocol takes precedence." body="Where your institution's protocol differs, follow your protocol and raise the discrepancy through the appropriate channel." theme={theme} />
-          <Divider theme={theme} />
-          <Row icon="👶" title="Paediatric use requires additional caution." body="Weight-based calculations for neonates and children carry higher risk. Always apply age-appropriate references and a pharmacist check." theme={theme} />
-        </SECTION>
-
-        {/* SpO2 targets */}
-        <SECTION label="OXYGEN / SPO₂ TARGETS" theme={theme}>
-          <View style={styles.spo2Grid}>
-            {[
-              { label: 'General', range: '92–96%', sub: 'most adults · BTS/TSANZ', color: theme.primary },
-              { label: 'COPD / at-risk', range: '88–92%', sub: 'hypercapnia risk', color: theme.warn },
-              { label: 'Acutely ill', range: '94–98%', sub: 'sepsis, MI, stroke', color: theme.danger },
-              { label: 'Paeds / neonate', range: '91–95%', sub: 'confirm per protocol', color: theme.muted },
-            ].map(t => (
-              <View key={t.label} style={[styles.spo2Card, { backgroundColor: theme.s2 }]}>
-                <Text style={[styles.spo2Label, { color: t.color }]}>{t.label}</Text>
-                <Text style={[styles.spo2Range, { color: theme.text }]}>{t.range}</Text>
-                <Text style={[styles.spo2Sub, { color: theme.muted }]}>{t.sub}</Text>
+          <SECTION label="WHEN NOT TO USE" danger theme={theme}>
+            {['You are unfamiliar with the drug, route, or indication — look it up first.',
+              'The patient is deteriorating — escalate immediately rather than calculating.',
+              'Your policy mandates a pharmacist check — this app does not replace that requirement.',
+              'Complex titration with multi-step adjustments — use the pump\'s validated drug library.',
+              'The order is unclear or ambiguous — clarify with the prescriber before calculating.'
+            ].map((t, i) => (
+              <View key={i}>
+                {i > 0 && <Divider theme={theme} />}
+                <Row icon="🚫" body={t} theme={theme} />
               </View>
             ))}
-          </View>
-          <View style={[styles.warnNote, { backgroundColor: theme.warnSoft }]}>
-            <Text style={[styles.warnNoteText, { color: theme.text }]}>⚠ Titrate to the lowest flow that achieves the target. <Text style={{ fontWeight: '700' }}>Hyperoxia is harmful.</Text> Confirm unclear orders with the prescriber.</Text>
-          </View>
-        </SECTION>
+          </SECTION>
 
-      </ScrollView>
+          <SECTION label="LEGAL & ETHICAL" theme={theme}>
+            <Row icon="⚖️" title="Not a certified medical device." body="This app is a mathematical aid. It has not been validated or approved under CE, FDA, TGA, or any other regulatory framework." theme={theme} />
+            <Divider theme={theme} />
+            <Row icon="📋" title="The prescriber's order is the authority." body="A result that differs from the order means query the order — not that the order is wrong." theme={theme} />
+            <Divider theme={theme} />
+            <Row icon="🏛" title="Professional accountability stays with the clinician." body="Using this app does not transfer or reduce your professional, legal, or ethical responsibility." theme={theme} />
+            <Divider theme={theme} />
+            <Row icon="🏥" title="Local protocol takes precedence." body="Where your institution's protocol differs, follow your protocol and raise the discrepancy through the appropriate channel." theme={theme} />
+            <Divider theme={theme} />
+            <Row icon="👶" title="Paediatric use requires additional caution." body="Weight-based calculations for neonates and children carry higher risk. Always apply age-appropriate references and a pharmacist check." theme={theme} />
+          </SECTION>
+
+          {/* SpO2 targets */}
+          <SECTION label="OXYGEN / SPO₂ TARGETS" theme={theme}>
+            <View style={styles.spo2Grid}>
+              {[
+                { label: 'General', range: '92–96%', sub: 'most adults · BTS/TSANZ', color: theme.primary },
+                { label: 'COPD / at-risk', range: '88–92%', sub: 'hypercapnia risk', color: theme.warn },
+                { label: 'Acutely ill', range: '94–98%', sub: 'sepsis, MI, stroke', color: theme.danger },
+                { label: 'Paeds / neonate', range: '91–95%', sub: 'confirm per protocol', color: theme.muted },
+              ].map(t => (
+                <View key={t.label} style={[styles.spo2Card, { backgroundColor: theme.s2 }]}>
+                  <Text style={[styles.spo2Label, { color: t.color }]}>{t.label}</Text>
+                  <Text style={[styles.spo2Range, { color: theme.text }]}>{t.range}</Text>
+                  <Text style={[styles.spo2Sub, { color: theme.muted }]}>{t.sub}</Text>
+                </View>
+              ))}
+            </View>
+            <View style={[styles.warnNote, { backgroundColor: theme.warnSoft }]}>
+              <Text style={[styles.warnNoteText, { color: theme.text }]}>⚠ Titrate to the lowest flow that achieves the target. <Text style={{ fontWeight: '700' }}>Hyperoxia is harmful.</Text> Confirm unclear orders with the prescriber.</Text>
+            </View>
+          </SECTION>
+
+        </ScrollView>
+      </Animated.View>
     </SafeAreaView>
   );
 }

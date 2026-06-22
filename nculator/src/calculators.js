@@ -203,12 +203,12 @@ export function calcBSA({ bsaWt, bsaHt }) {
 
 // Tool metadata
 export const TOOLS = [
-  { id: 'dose',          name: 'Drug dose',              icon: '💊', desc: 'mL to draw up from a vial',             color: '#4ade80', rgb: '74,222,128',   fields: [
+  { id: 'dose',          name: 'Drug dose',              icon: 'pill',                  desc: 'mL to draw up from a vial',             color: '#4ade80', rgb: '74,222,128',   fields: [
     { key: 'doseToGive', label: 'Dose to give',    unit: 'mg',     mode: 'decimal' },
     { key: 'doseInVial', label: 'Dose in vial',    unit: 'mg',     mode: 'decimal' },
     { key: 'diluent',    label: 'Diluent volume',  unit: 'mL',     mode: 'decimal' }
   ], calc: calcDose },
-  { id: 'drip',          name: 'IV drip rate',           icon: '💧', desc: 'drops/min on a gravity set',            color: '#38bdf8', rgb: '56,189,248',   fields: [
+  { id: 'drip',          name: 'IV drip rate',           icon: 'water',                 desc: 'drops/min on a gravity set',            color: '#38bdf8', rgb: '56,189,248',   fields: [
     { key: 'volume',     label: 'Volume',          unit: 'mL',     mode: 'decimal' },
     { key: 'time',       label: 'Time',            unit: 'hr',     mode: 'decimal' },
     { key: 'dropFactor', label: 'Drop factor',     unit: '',       mode: 'select', options: [
@@ -220,43 +220,43 @@ export const TOOLS = [
       { value: '60', label: '60 gtt/mL — microdrip / paediatric' }
     ]}
   ], calc: calcDrip },
-  { id: 'pump',          name: 'IV pump rate',           icon: '⚡', desc: 'mL per hour',                           color: '#a78bfa', rgb: '167,139,250',  fields: [
+  { id: 'pump',          name: 'IV pump rate',           icon: 'lightning-bolt',        desc: 'mL per hour',                           color: '#a78bfa', rgb: '167,139,250',  fields: [
     { key: 'pumpVolume', label: 'Volume',          unit: 'mL',     mode: 'decimal' },
     { key: 'pumpTime',   label: 'Time',            unit: 'hr',     mode: 'decimal' }
   ], calc: calcPump },
-  { id: 'weight',        name: 'Weight-based dose',      icon: '⚖️', desc: 'total/day and per dose',                color: '#fbbf24', rgb: '251,191,36',   fields: [
+  { id: 'weight',        name: 'Weight-based dose',      icon: 'scale',                 desc: 'total/day and per dose',                color: '#fbbf24', rgb: '251,191,36',   fields: [
     { key: 'weight',     label: 'Patient weight',  unit: 'kg',     mode: 'decimal' },
     { key: 'doseMgKg',   label: 'Dose ordered',   unit: 'mg/kg',  mode: 'decimal' },
     { key: 'dosesPerDay',label: 'Doses per day',   unit: '',       mode: 'numeric' }
   ], calc: calcWeight },
-  { id: 'infusion',      name: 'Infusion time',          icon: '⏱', desc: 'time remaining at current rate',         color: '#f472b6', rgb: '244,114,182',  fields: [
+  { id: 'infusion',      name: 'Infusion time',          icon: 'timer-outline',         desc: 'time remaining at current rate',         color: '#f472b6', rgb: '244,114,182',  fields: [
     { key: 'volLeft',    label: 'Volume left',     unit: 'mL',     mode: 'decimal' },
     { key: 'rateMlHr',   label: 'Pump rate',       unit: 'mL/hr',  mode: 'decimal' }
   ], calc: calcInfusion },
-  { id: 'convert',       name: 'Unit converter',         icon: '🔄', desc: 'kg↔lb, g→mg, mg→mcg, L→mL',            color: '#2dd4bf', rgb: '45,212,191',   fields: [
+  { id: 'convert',       name: 'Unit converter',         icon: 'swap-horizontal',       desc: 'kg↔lb, g→mg, mg→mcg, L→mL',            color: '#2dd4bf', rgb: '45,212,191',   fields: [
     { key: 'convType',   label: 'Conversion',      unit: '',       mode: 'select', options: [
       { value: 'kg_lb', label: 'kg → lb' }, { value: 'lb_kg', label: 'lb → kg' },
       { value: 'g_mg',  label: 'g → mg'  }, { value: 'mg_mcg',label: 'mg → mcg' }, { value: 'L_mL', label: 'L → mL' }
     ]},
     { key: 'convVal',    label: 'Value',           unit: '',       mode: 'decimal' }
   ], calc: calcConvert },
-  { id: 'oxygen',        name: 'Oxygen / SpO₂',          icon: '🫁', desc: 'SpO₂ target assessment',               color: '#60a5fa', rgb: '96,165,250',   fields: [
+  { id: 'oxygen',        name: 'Oxygen / SpO₂',          icon: 'lungs',                 desc: 'SpO₂ target assessment',               color: '#60a5fa', rgb: '96,165,250',   fields: [
     { key: 'spo2Reading',label: 'Current SpO₂',    unit: '%',      mode: 'decimal' },
     { key: 'spo2Cat',    label: 'Patient category', unit: '',      mode: 'select', options: [
       { value: 'general', label: 'General adult' }, { value: 'copd', label: 'COPD / hypercapnia risk' },
       { value: 'acute',   label: 'Acutely ill (sepsis, MI, stroke)' }, { value: 'paeds', label: 'Paediatric / neonate' }
     ]}
   ], calc: calcOxygen },
-  { id: 'titration',     name: 'Titration',              icon: '⚠️', desc: 'µg/kg/min critical-care infusion',      color: '#f87171', rgb: '248,113,113',  danger: true, fields: [
+  { id: 'titration',     name: 'Titration',              icon: 'alert-decagram',        desc: 'µg/kg/min critical-care infusion',      color: '#f87171', rgb: '248,113,113',  danger: true, fields: [
     { key: 'drugMg',     label: 'Drug in bag',     unit: 'mg',     mode: 'decimal' },
     { key: 'bagVol',     label: 'Bag volume',      unit: 'mL',     mode: 'decimal' },
     { key: 'titWeight',  label: 'Patient weight',  unit: 'kg',     mode: 'decimal' },
     { key: 'ordDose',    label: 'Ordered dose',    unit: 'µg/kg/min', mode: 'decimal' }
   ], calc: calcTitration },
-  { id: 'cannula',       name: 'Cannula gauge',          icon: '🩸', desc: 'flow-ceiling sanity check',             color: '#fb923c', rgb: '251,146,60',   fields: [
+  { id: 'cannula',       name: 'Cannula gauge',          icon: 'needle',                desc: 'flow-ceiling sanity check',             color: '#fb923c', rgb: '251,146,60',   fields: [
     { key: 'reqRate',    label: 'Required rate',   unit: 'mL/hr',  mode: 'decimal' }
   ], calc: calcCannula },
-  { id: 'creatinine',    name: 'Creatinine clearance',   icon: '🧪', desc: 'Cockcroft–Gault · mL/min',              color: '#e879f9', rgb: '232,121,249',  fields: [
+  { id: 'creatinine',    name: 'Creatinine clearance',   icon: 'flask-outline',         desc: 'Cockcroft–Gault · mL/min',              color: '#e879f9', rgb: '232,121,249',  fields: [
     { key: 'crWt',       label: 'Patient weight',  unit: 'kg',     mode: 'decimal' },
     { key: 'crAge',      label: 'Age',             unit: 'years',  mode: 'numeric' },
     { key: 'crScr',      label: 'Serum creatinine',unit: 'mg/dL',  mode: 'decimal' },
@@ -264,12 +264,12 @@ export const TOOLS = [
       { value: 'male', label: 'Male' }, { value: 'female', label: 'Female' }
     ]}
   ], calc: calcCreatinine },
-  { id: 'reconstitution',name: 'Reconstitution',         icon: '💉', desc: 'concentration from powder + diluent',   color: '#c084fc', rgb: '192,132,252',  fields: [
+  { id: 'reconstitution',name: 'Reconstitution',         icon: 'test-tube',             desc: 'concentration from powder + diluent',   color: '#c084fc', rgb: '192,132,252',  fields: [
     { key: 'recoPowder', label: 'Drug in vial',    unit: 'mg',     mode: 'decimal' },
     { key: 'recoDiluent',label: 'Diluent to add',  unit: 'mL',     mode: 'decimal' },
     { key: 'recoDoseWant',label:'Dose wanted (opt)',unit: 'mg',     mode: 'decimal' }
   ], calc: calcReconstitution },
-  { id: 'bsa',           name: 'Body surface area',      icon: '📐', desc: 'Mosteller formula · m²',               color: '#34d399', rgb: '52,211,153',   fields: [
+  { id: 'bsa',           name: 'Body surface area',      icon: 'human-male-height',     desc: 'Mosteller formula · m²',               color: '#34d399', rgb: '52,211,153',   fields: [
     { key: 'bsaWt',      label: 'Weight',          unit: 'kg',     mode: 'decimal' },
     { key: 'bsaHt',      label: 'Height',          unit: 'cm',     mode: 'decimal' }
   ], calc: calcBSA }
