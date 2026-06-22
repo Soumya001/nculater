@@ -30,8 +30,14 @@ jobs:
         working-directory: bedside-native
         run: npm install --legacy-peer-deps
 
-      - name: Verify EAS CLI + token
+      - name: Verify EAS token
         run: eas whoami
+        env:
+          EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
+
+      - name: Init / link EAS project
+        working-directory: bedside-native
+        run: eas init --force --non-interactive
         env:
           EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
 
@@ -41,17 +47,16 @@ jobs:
         env:
           EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
 
-      - name: Get APK URL and download
+      - name: Download APK from EAS
         working-directory: bedside-native
         run: |
           URL=$(eas build:list --platform android --status finished --limit 1 --json --non-interactive 2>/dev/null | python3 -c "import sys,json; d=json.load(sys.stdin); print(d[0]['artifacts']['buildUrl'])" 2>/dev/null || echo "")
-          echo "APK_URL=$URL" >> $GITHUB_ENV
-          if [ -n "$URL" ]; then curl -L "$URL" -o ../nculater.apk && echo "✓ Downloaded APK"; fi
+          if [ -n "$URL" ]; then curl -L "$URL" -o ../nculater.apk && echo "✓ APK downloaded"; fi
         env:
           EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
         continue-on-error: true
 
-      - name: Upload APK as artifact
+      - name: Upload APK artifact
         uses: actions/upload-artifact@v4
         with:
           name: nculater-android-apk
@@ -78,6 +83,12 @@ jobs:
       - name: Install app dependencies
         working-directory: bedside-native
         run: npm install --legacy-peer-deps
+
+      - name: Init / link EAS project
+        working-directory: bedside-native
+        run: eas init --force --non-interactive
+        env:
+          EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
 
       - name: Build iOS on EAS servers
         working-directory: bedside-native
