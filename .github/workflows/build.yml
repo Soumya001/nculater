@@ -1,73 +1,24 @@
 name: Build Android APK
 on:
   workflow_dispatch:
-    inputs:
-      platform:
-        description: Platform
-        required: true
-        default: android
-        type: choice
-        options:
-          - android
-          - ios
 jobs:
-  android:
+  build:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: '18'
+          node-version: 18
       - name: Install EAS CLI
         run: npm install -g eas-cli
       - name: Install deps
-        working-directory: bedside-native
-        run: npm install --legacy-peer-deps
-      - name: Verify token
-        run: eas whoami
-        env:
-          EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
-      - name: Setup project
-        working-directory: bedside-native
-        run: |
-          ACCOUNT=$(eas whoami 2>/dev/null | tr -d '\n')
-          echo "Account: $ACCOUNT"
-          RESP=$(curl -sf -X POST https://api.expo.dev/graphql \
-            -H "Authorization: Bearer $EXPO_TOKEN" \
-            -H "Content-Type: application/json" \
-            --data-raw '{"query":"mutation { app { createApp(appInput: { accountName: \"'$ACCOUNT'\", projectName: \"nculater\" }) { id } } }"}' || echo '{}')
-          echo "$RESP"
-          PID=$(echo "$RESP" | python3 -c "import sys,json; d=json.load(sys.stdin); print(d.get('data',{}).get('app',{}).get('createApp',{}).get('id',''))" 2>/dev/null || echo "")
-          echo "ProjectID: $PID"
-          if [ -n "$PID" ]; then
-            python3 -c "
-import json, os
-pid = '$PID'
-with open('app.json') as f: d = json.load(f)
-d['expo'].setdefault('extra', {})['eas'] = {'projectId': pid}
-with open('app.json', 'w') as f: json.dump(d, f, indent=2)
-print('Updated app.json with project ID:', pid)
-"
-          fi
-        env:
-          EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
-        continue-on-error: true
+        run: cd bedside-native && npm install --legacy-peer-deps
       - name: Build APK
-        working-directory: bedside-native
-        run: eas build --platform android --profile preview --non-interactive --wait
+        run: cd bedside-native && eas build --platform android --profile preview --non-interactive --wait
         env:
           EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
-      - name: Download APK
-        working-directory: bedside-native
-        run: |
-          URL=$(eas build:list --platform android --status finished --limit 1 --json --non-interactive 2>/dev/null | python3 -c "import sys,json; print(json.load(sys.stdin)[0]['artifacts']['buildUrl'])" 2>/dev/null || echo "")
-          if [ -n "$URL" ]; then curl -L "$URL" -o ../nculater.apk; fi
+      - name: List artifacts
+        run: cd bedside-native && eas build:list --platform android --status finished --limit 1 --non-interactive
         env:
           EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
         continue-on-error: true
-      - uses: actions/upload-artifact@v4
-        with:
-          name: nculater-apk
-          path: nculater.apk
-          if-no-files-found: warn
-          retention-days: 90
