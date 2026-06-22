@@ -60,8 +60,8 @@ export default function SettingsScreen() {
           <View style={styles.row}>
             <Text style={styles.rowIcon}>💊</Text>
             <View style={{ flex: 1 }}>
-              <Text style={[styles.rowTitle, { color: theme.text }]}>Bedside Pro</Text>
-              <Text style={[styles.rowSub, { color: theme.muted }]}>Version 1.0.0 · 12 calculators</Text>
+              <Text style={[styles.rowTitle, { color: theme.text }]}>Nculator</Text>
+              <Text style={[styles.rowSub, { color: theme.muted }]}>Version 1.1.0 · 12 calculators</Text>
             </View>
           </View>
           <View style={[styles.divider, { backgroundColor: theme.border }]} />

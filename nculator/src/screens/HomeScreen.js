@@ -15,7 +15,7 @@ export default function HomeScreen({ navigation }) {
 
   const featuredLabel = pinnedTools?.length ? 'Pinned' : recentTools?.length ? 'Recent' : 'Quick access';
   const featured = featuredIds.map(id => TOOLS.find(t => t.id === id)).filter(Boolean);
-  const gridTools = TOOLS.filter(t => !featuredIds.includes(t.id)).slice(0, 8);
+  const gridTools = TOOLS.filter(t => !featuredIds.includes(t.id));
 
   const openTool = (tool) => {
     addRecent(tool.id);

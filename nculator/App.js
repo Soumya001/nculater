@@ -7,6 +7,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { StatusBar } from 'expo-status-bar';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 
 import { getTheme } from './src/theme';
 import HomeScreen from './src/screens/HomeScreen';
@@ -22,8 +23,18 @@ const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
 
 function TabIcon({ name, focused, color }) {
-  const icons = { Home: '⌂', Tools: '⚙', Reference: '📖', Settings: '⋮' };
-  return <Text style={{ fontSize: focused ? 22 : 20, color }}>{icons[name]}</Text>;
+  const icons = {
+    Home: focused ? 'home' : 'home-outline',
+    Tools: focused ? 'calculator' : 'calculator-outline',
+    Reference: focused ? 'book-open-variant' : 'book-open-outline',
+    Settings: focused ? 'cog' : 'cog-outline',
+  };
+  return (
+    <View style={{ alignItems: 'center' }}>
+      <MaterialCommunityIcons name={icons[name]} size={24} color={color} />
+      {focused && <View style={{ width: 4, height: 4, borderRadius: 2, backgroundColor: color, marginTop: 3 }} />}
+    </View>
+  );
 }
 
 function TabNavigator() {
@@ -36,9 +47,9 @@ function TabNavigator() {
           backgroundColor: theme.navBg,
           borderTopColor: theme.border,
           borderTopWidth: 1,
-          height: Platform.OS === 'ios' ? 82 : 60,
-          paddingBottom: Platform.OS === 'ios' ? 24 : 8,
-          paddingTop: 8,
+          height: Platform.OS === 'ios' ? 88 : 64,
+          paddingBottom: Platform.OS === 'ios' ? 26 : 10,
+          paddingTop: 10,
         },
         tabBarActiveTintColor: theme.accent,
         tabBarInactiveTintColor: theme.muted,
