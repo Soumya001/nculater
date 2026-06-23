@@ -1,5 +1,5 @@
 import React, { useContext, useState, useCallback, useRef, useEffect } from 'react';
-import { View, Text, Animated, Easing, ScrollView, TouchableOpacity, Pressable, TextInput, StyleSheet, KeyboardAvoidingView, Platform } from 'react-native';
+import { View, Text, Animated, Easing, ScrollView, TouchableOpacity, Pressable, TextInput, StyleSheet, Platform } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -71,7 +71,7 @@ export default function ToolScreen({ route, navigation }) {
 
   return (
     <SafeAreaView style={[s.safe, { backgroundColor: theme.bg }]}>
-      <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
+      <View style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
 
         {/* CENTERED HERO HEADER */}
         <View style={s.heroWrap}>
@@ -397,13 +397,13 @@ export default function ToolScreen({ route, navigation }) {
           )}
         </Animated.View>
 
-      </KeyboardAvoidingView>
+      </View>
     </SafeAreaView>
   );
 }
 
 const styles = (theme) => StyleSheet.create({
-  safe: { flex: 1, ...(Platform.OS === 'web' ? { height: '100vh', overflow: 'hidden' } : {}) },
+  safe: { flex: 1 },
   heroWrap: { flexShrink: 0 },
   heroGradient: { paddingBottom: 4 },
   heroBackRow: { flexDirection: 'row', paddingHorizontal: 14, paddingTop: 6, paddingBottom: 8 },
@@ -412,7 +412,7 @@ const styles = (theme) => StyleSheet.create({
   iconBadge: { width: 72, height: 72, borderRadius: 22, overflow: 'hidden' },
   iconBadgeGrad: { width: 72, height: 72, borderRadius: 22, alignItems: 'center', justifyContent: 'center' },
   toolName: { fontSize: 23, fontWeight: '700', letterSpacing: -0.3, marginTop: 14, textAlign: 'center' },
-  scroll: { flex: 1, ...(Platform.OS === 'web' ? { overflow: 'auto' } : {}) },
+  scroll: { flex: 1 },
   content: { padding: 16, paddingBottom: 24 },
   banner: { flexDirection: 'row', gap: 11, padding: 14, borderRadius: 16, borderWidth: 1, marginBottom: 16, alignItems: 'flex-start' },
   bannerEmoji: { fontSize: 18 },
