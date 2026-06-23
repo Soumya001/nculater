@@ -71,7 +71,7 @@ export default function ToolScreen({ route, navigation }) {
 
   return (
     <SafeAreaView style={[s.safe, { backgroundColor: theme.bg }]}>
-      <View style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
+      <View style={{ flex: 1 }}>
 
         {/* CENTERED HERO HEADER */}
         <View style={s.heroWrap}>
@@ -404,16 +404,16 @@ export default function ToolScreen({ route, navigation }) {
 
 const styles = (theme) => StyleSheet.create({
   safe: { flex: 1 },
-  heroWrap: { flexShrink: 0, flexGrow: 0 },
-  heroGradient: { paddingBottom: 4, overflow: 'hidden' },
+  heroWrap: { },
+  heroGradient: { paddingBottom: 4 },
   heroBackRow: { flexDirection: 'row', paddingHorizontal: 14, paddingTop: 6, paddingBottom: 8 },
   backBtn: { width: 42, height: 42, borderRadius: 21, backgroundColor: 'rgba(255,255,255,0.09)', alignItems: 'center', justifyContent: 'center' },
   heroCentered: { alignItems: 'center', paddingHorizontal: 20, paddingBottom: 24 },
   iconBadge: { width: 72, height: 72, borderRadius: 22, overflow: 'hidden' },
   iconBadgeGrad: { width: 72, height: 72, borderRadius: 22, alignItems: 'center', justifyContent: 'center' },
   toolName: { fontSize: 23, fontWeight: '700', letterSpacing: -0.3, marginTop: 14, textAlign: 'center' },
-  scroll: { flex: 1, minHeight: 0 },
-  content: { padding: 16, paddingBottom: 24, flexGrow: 1 },
+  scroll: { flex: 1 },
+  content: { padding: 16, paddingBottom: 24 },
   banner: { flexDirection: 'row', gap: 11, padding: 14, borderRadius: 16, borderWidth: 1, marginBottom: 16, alignItems: 'flex-start' },
   bannerEmoji: { fontSize: 18 },
   bannerText: { flex: 1, fontSize: 13, lineHeight: 19 },
