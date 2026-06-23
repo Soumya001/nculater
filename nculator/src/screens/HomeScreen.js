@@ -89,7 +89,7 @@ function getIconStyle(id, anim) {
 }
 
 export default function HomeScreen({ navigation }) {
-  const { theme, recentTools, pinnedTools, addRecent, setPins } = useContext(AppContext);
+  const { theme, isDark, recentTools, pinnedTools, addRecent, setPins } = useContext(AppContext);
   const [editing, setEditing] = useState(false);
 
   const startEdit = useCallback(() => {
