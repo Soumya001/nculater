@@ -1,5 +1,5 @@
 import React, { useContext, useMemo, useRef, useCallback, useState } from 'react';
-import { View, Text, Animated, Easing, ScrollView, Pressable, TouchableOpacity, StyleSheet, Dimensions } from 'react-native';
+import { View, Text, Animated, Easing, ScrollView, Pressable, TouchableOpacity, StyleSheet, Dimensions, Platform } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useFocusEffect } from '@react-navigation/native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
@@ -8,6 +8,33 @@ import * as Haptics from 'expo-haptics';
 import { AppContext } from '../../App';
 import { TOOLS } from '../calculators';
 import TopBar from '../components/TopBar';
+
+function card3dShadow(rgb, isDark, danger) {
+  if (Platform.OS !== 'web') return {};
+  const d = danger ? true : false;
+  if (isDark) {
+    return { boxShadow: [
+      'inset 0 1.5px 0 rgba(255,255,255,.13)',
+      'inset 1px 0 0 rgba(255,255,255,.04)',
+      'inset -1px 0 0 rgba(0,0,0,.2)',
+      '0 0 0 1px rgba(0,0,0,.7)',
+      `0 1px 0 rgba(${rgb},${d?.6:.42})`,
+      '0 3px 0 rgba(0,0,0,.9)',
+      '0 5px 0 rgba(0,0,0,.4)',
+      `0 10px 28px rgba(${rgb},${d?.2:.13})`,
+      '0 20px 55px rgba(0,0,0,.55)',
+    ].join(', ') };
+  }
+  return { boxShadow: [
+    'inset 0 1px 0 rgba(255,255,255,.95)',
+    'inset 0 -1px 0 rgba(0,0,0,.04)',
+    `0 0 0 1px rgba(${rgb},${d?.22:.15})`,
+    `0 2px 0 rgba(${rgb},${d?.38:.26})`,
+    '0 4px 0 rgba(0,0,0,.07)',
+    `0 8px 22px rgba(${rgb},${d?.14:.09})`,
+    '0 18px 40px rgba(0,0,0,.08)',
+  ].join(', ') };
+}
 
 const ICON_DURATIONS = {
   dose: 850, drip: 550, pump: 650, weight: 600,
@@ -194,7 +221,7 @@ export default function HomeScreen({ navigation }) {
             {featured.map((tool) => (
               <View key={tool.id} style={{ position: 'relative' }}>
                 <Pressable
-                  style={({ pressed }) => [s.featCard, { shadowColor: `rgba(${tool.rgb},0.5)`, borderBottomColor: `rgba(${tool.rgb},0.42)` }, pressed && !editing && s.pressed]}
+                  style={({ pressed }) => [s.featCard, { shadowColor: `rgba(${tool.rgb},0.5)`, borderBottomColor: `rgba(${tool.rgb},0.42)`, ...card3dShadow(tool.rgb, isDark, tool.danger) }, pressed && !editing && s.pressed]}
                   onPress={() => editing ? null : openTool(tool)}>
                   <LinearGradient
                     colors={isDark ? [`rgba(${tool.rgb},0.22)`, '#1a1b22', '#14151b'] : [`rgba(${tool.rgb},0.12)`, '#ffffff', '#ffffff']}
@@ -252,7 +279,7 @@ export default function HomeScreen({ navigation }) {
           <View style={s.grid}>
             {gridTools.map((tool) => (
               <Pressable key={tool.id}
-                style={({ pressed }) => [s.gridCard, { shadowColor: `rgba(${tool.rgb},0.4)`, borderBottomColor: `rgba(${tool.rgb},0.42)` }, pressed && s.pressedGrid]}
+                style={({ pressed }) => [s.gridCard, { shadowColor: `rgba(${tool.rgb},0.4)`, borderBottomColor: `rgba(${tool.rgb},0.42)`, ...card3dShadow(tool.rgb, isDark, tool.danger) }, pressed && s.pressedGrid]}
                 onPress={() => openTool(tool)}>
                 <LinearGradient
                   colors={isDark ? [`rgba(${tool.rgb},0.22)`, '#1a1b22', '#14151b'] : [`rgba(${tool.rgb},0.12)`, '#ffffff', '#ffffff']}
@@ -299,7 +326,7 @@ const styles = (theme) => StyleSheet.create({
   tuneBtn: { width: 34, height: 34, borderRadius: 11, alignItems: 'center', justifyContent: 'center' },
   doneText: { fontSize: 13, fontWeight: '700', paddingVertical: 5, paddingHorizontal: 2 },
   featuredList: { gap: 9 },
-  featCard: { borderRadius: 20, elevation: 8, shadowOffset: { width: 0, height: 6 }, shadowOpacity: 0.35, shadowRadius: 20, overflow: 'hidden', borderBottomWidth: 3 },
+  featCard: { borderRadius: 20, overflow: 'hidden', ...Platform.select({ web: {}, default: { elevation: 8, shadowOffset: { width: 0, height: 6 }, shadowOpacity: 0.35, shadowRadius: 20 } }) },
   featGradient: { flexDirection: 'row', alignItems: 'center', gap: 16, padding: 19 },
   featIcon: { width: 52, height: 52, borderRadius: 17, alignItems: 'center', justifyContent: 'center' },
   featText: { flex: 1 },
@@ -309,7 +336,7 @@ const styles = (theme) => StyleSheet.create({
   dividerLine: { flex: 1, height: 1 },
   dividerText: { fontSize: 10, fontWeight: '700', letterSpacing: 1.4, textTransform: 'uppercase', opacity: 0.45 },
   grid: { flexDirection: 'row', flexWrap: 'wrap', gap: 9 },
-  gridCard: { width: (Dimensions.get('window').width - 32 - 9) / 2, borderRadius: 20, elevation: 6, shadowOffset: { width: 0, height: 5 }, shadowOpacity: 0.3, shadowRadius: 16, overflow: 'hidden', borderBottomWidth: 3 },
+  gridCard: { width: (Dimensions.get('window').width - 32 - 9) / 2, borderRadius: 20, overflow: 'hidden', ...Platform.select({ web: {}, default: { elevation: 6, shadowOffset: { width: 0, height: 5 }, shadowOpacity: 0.3, shadowRadius: 16 } }) },
   gridGradient: { padding: 17, paddingBottom: 20, borderRadius: 20, position: 'relative', minHeight: 140 },
   dotPip: { position: 'absolute', top: 15, right: 15, width: 7, height: 7, borderRadius: 3.5 },
   gridIconWrap: { width: 44, height: 44, borderRadius: 14, alignItems: 'center', justifyContent: 'center' },
