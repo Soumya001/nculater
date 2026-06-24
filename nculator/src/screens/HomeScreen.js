@@ -337,7 +337,7 @@ const styles = (theme) => StyleSheet.create({
   dividerText: { fontSize: 10, fontWeight: '700', letterSpacing: 1.4, textTransform: 'uppercase', opacity: 0.45 },
   grid: { flexDirection: 'row', flexWrap: 'wrap', gap: 9 },
   gridCard: { width: '48%', borderRadius: 20, borderWidth: 1, ...Platform.select({ web: { overflow: 'hidden' }, default: { elevation: 5, shadowOffset: { width: 0, height: 4 }, shadowOpacity: 0.25, shadowRadius: 12 } }) },
-  gridGradient: { padding: 17, paddingBottom: 20, position: 'relative', borderRadius: 19, overflow: 'hidden' },
+  gridGradient: { padding: 17, paddingBottom: 20, position: 'relative', borderRadius: 19, overflow: 'hidden', minHeight: 150 },
   dotPip: { position: 'absolute', top: 15, right: 15, width: 7, height: 7, borderRadius: 3.5 },
   gridIconWrap: { width: 44, height: 44, borderRadius: 14, alignItems: 'center', justifyContent: 'center' },
   gridName: { fontSize: 14, fontWeight: '700', marginTop: 11, letterSpacing: -0.1 },
