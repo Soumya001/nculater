@@ -224,7 +224,7 @@ export default function HomeScreen({ navigation }) {
                   style={({ pressed }) => [s.featCard, { borderColor: `rgba(${tool.rgb},0.3)`, shadowColor: `rgba(${tool.rgb},0.5)`, ...card3dShadow(tool.rgb, isDark, tool.danger) }, pressed && !editing && s.pressed]}
                   onPress={() => editing ? null : openTool(tool)}>
                   <LinearGradient
-                    colors={isDark ? [`rgba(${tool.rgb},0.22)`, '#1a1b22', '#14151b'] : [`rgba(${tool.rgb},0.12)`, '#ffffff', '#ffffff']}
+                    colors={isDark ? [`rgba(${tool.rgb},0.22)`, '#1a1b22'] : [`rgba(${tool.rgb},0.12)`, '#ffffff']}
                     start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }}
                     style={s.featGradient}>
                     <View style={[s.featIcon, { backgroundColor: `rgba(${tool.rgb},0.18)` }]}>
@@ -282,7 +282,7 @@ export default function HomeScreen({ navigation }) {
                 style={({ pressed }) => [s.gridCard, { borderColor: `rgba(${tool.rgb},0.2)`, shadowColor: `rgba(${tool.rgb},0.4)`, ...card3dShadow(tool.rgb, isDark, tool.danger) }, pressed && s.pressedGrid]}
                 onPress={() => openTool(tool)}>
                 <LinearGradient
-                  colors={isDark ? [`rgba(${tool.rgb},0.22)`, '#1a1b22', '#14151b'] : [`rgba(${tool.rgb},0.12)`, '#ffffff', '#ffffff']}
+                  colors={isDark ? [`rgba(${tool.rgb},0.22)`, '#1a1b22'] : [`rgba(${tool.rgb},0.12)`, '#ffffff']}
                   start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }}
                   style={s.gridGradient}>
                   <View style={[s.dotPip, { backgroundColor: tool.color }]} />
