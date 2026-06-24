@@ -222,7 +222,7 @@ export default function HomeScreen({ navigation }) {
                     start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }}
                     style={s.featGradient}>
                     <View style={[s.featIcon, { backgroundColor: `rgba(${tool.rgb},0.18)` }]}>
-                      <Animated.View style={getIconStyle(tool.id, iconProgress[tool.id])}>
+                      <Animated.View style={[{ backgroundColor: 'transparent' }, getIconStyle(tool.id, iconProgress[tool.id])]}>
                         <MaterialCommunityIcons name={tool.icon} size={22} color={tool.color} />
                       </Animated.View>
                     </View>
@@ -281,7 +281,7 @@ export default function HomeScreen({ navigation }) {
                   style={s.gridGradient}>
                   <View style={[s.dotPip, { backgroundColor: tool.color }]} />
                   <View style={[s.gridIconWrap, { backgroundColor: `rgba(${tool.rgb},0.16)` }]}>
-                    <Animated.View style={getIconStyle(tool.id, iconProgress[tool.id])}>
+                    <Animated.View style={[{ backgroundColor: 'transparent' }, getIconStyle(tool.id, iconProgress[tool.id])]}>
                       <MaterialCommunityIcons name={tool.icon} size={20} color={tool.color} />
                     </Animated.View>
                   </View>
