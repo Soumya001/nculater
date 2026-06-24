@@ -76,7 +76,7 @@ export default function ToolsScreen({ navigation }) {
                     '0 4px 0 rgba(0,0,0,.07)',
                     `0 8px 22px rgba(${tool.rgb},${d?.14:.09})`,
                   ].join(', ') } : { shadowColor: `rgba(${tool.rgb},0.4)`, borderBottomColor: `rgba(${tool.rgb},0.38)` };
-                  return [s.row, webShadow, pressed && s.pressed];
+                  return [s.row, { borderColor: `rgba(${tool.rgb},0.25)` }, webShadow, pressed && s.pressed];
                 }}
                 onPress={() => openTool(tool)}>
                 <LinearGradient
@@ -115,8 +115,8 @@ const styles = (theme) => StyleSheet.create({
   scroll: { flex: 1 },
   content: { padding: 16, paddingTop: 4, paddingBottom: 32 },
   list: { gap: 10 },
-  row: { borderRadius: 20, overflow: 'hidden', ...Platform.select({ web: {}, default: { elevation: 6, shadowOffset: { width: 0, height: 5 }, shadowOpacity: 0.3, shadowRadius: 16 } }) },
-  rowGradient: { flexDirection: 'row', alignItems: 'center', gap: 13, padding: 14, borderRadius: 20 },
+  row: { borderRadius: 20, borderWidth: 1, ...Platform.select({ web: { overflow: 'hidden' }, default: { elevation: 6, shadowOffset: { width: 0, height: 5 }, shadowOpacity: 0.3, shadowRadius: 16 } }) },
+  rowGradient: { flexDirection: 'row', alignItems: 'center', gap: 13, padding: 14, borderRadius: 19, overflow: 'hidden' },
   rowIcon: { width: 42, height: 42, borderRadius: 13, alignItems: 'center', justifyContent: 'center' },
   rowText: { flex: 1 },
   rowName: { fontSize: 15, fontWeight: '700', letterSpacing: -0.1 },
